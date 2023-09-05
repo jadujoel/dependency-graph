@@ -3,7 +3,7 @@
 ## Requirements
 
 - [Graphvitz](https://graphviz.gitlab.io/download/)
-- [ja](https://jqlang.github.io/jq/download/)
+- [jq](https://jqlang.github.io/jq/download/)
 
 ## Get Started
 
