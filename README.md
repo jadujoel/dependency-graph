@@ -24,3 +24,18 @@ Generate the png file
 ```
 
 This will look in the ecas monorepo for any dependency that includes ecas in the name.
+
+## Example
+
+```bash
+brew install graphviz
+bash main.sh "../ecas" "./gens" "ecas"
+bash main.sh "../ecas" "./gens" "^(?!.*ecas-docs).*ecas.*$"
+```
+
+There is also another script included that checks that you dont use any unlisted dependencies.
+The check-deps.sh.
+
+```bash
+bash check-deps.sh "../ecas/packages/ecas-engine"
+```
