@@ -21,8 +21,18 @@ SOURCE_CODE_PATH="$PACKAGE_PATH/src"
 
 
 # Find all imports in the source code from .ts and .tsx files, and remove duplicates
-IMPORTS=$(find $SOURCE_CODE_PATH -type f \( -name "*.ts" -o -name "*.tsx" \) -exec grep -hoE "^import .* from ['\"](@[^'\"]+|[^./][^'\"]*)['\"]" {} \; | awk -F"from" '{print $2}' | tr -d " ;'" | sort | uniq)
+IMPORTS_RAW=$(find "$SOURCE_CODE_PATH" -type f \( -name "*.ts" -o -name "*.tsx" \) -exec awk '/import/,/from/' {} \; | grep -oE "from ['\"](@?[^'\"]+)['\"]" | grep -oE "['\"](@?[^'\"]+)['\"]" | tr -d "'\"" | grep -vE "^\.")
 
+# Extract the base package or scoped name
+IMPORTS=$(echo "$IMPORTS_RAW" | while read -r line; do
+    if [[ $line == @* ]]; then
+        # For scoped packages
+        echo "$line" | awk -F"/" '{if (NF>1) print $1"/"$2; else print $1}'
+    else
+        # For regular packages
+        echo "$line" | awk -F"/" '{print $1}'
+    fi
+done | sort | uniq)
 
 if [[ $VERBOSE == true ]]; then
   echo "Found Dependencies:
